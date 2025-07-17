@@ -4,10 +4,20 @@
 </div>
 } @else if (valid === false && errors.length) {
 <div class="alert alert-danger">
-    <strong>Validation Errors:</strong>
-    <ul>
+    <div class="fw-bold mb-2">Validation Errors</div>
+    <ul class="mb-0">
         @for (err of errors; track err) {
-        <li>{{ err }}</li>
+            @if (err && err.includes('\n')) {
+                @for (line of err.split('\n'); track line) {
+                    @if(line.trim().length > 0){
+                        <li>{{ line.length > 200 ? (line.slice(0, 200) + '...') : line }}</li>
+                    }
+                }
+            } @else {
+                @if(err.trim().length > 0){
+                    <li>{{ err.length > 200 ? (err.slice(0, 200) + '...') : err }}</li>
+                }
+            }
         }
     </ul>
 </div>
