@@ -57,6 +57,9 @@
                 <pre class="bg-light p-2 border small">{{ json }}</pre>
                 }
             </div>
+            @if(yaml && yaml.trim().length > 0){
+              <app-swagger-preview [spec]="yaml"></app-swagger-preview>
+            }
         </div>
     </div>
 </div>

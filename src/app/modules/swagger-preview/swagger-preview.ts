@@ -3,7 +3,6 @@ import {
   OnChanges, SimpleChanges, ViewChild
 } from '@angular/core';
 import * as YAML from 'yaml';
-import SwaggerUI from 'swagger-ui-dist';
 import { SwaggerUIBundle, SwaggerUIStandalonePreset } from 'swagger-ui-dist';
 
 @Component({
@@ -41,22 +40,17 @@ export class SwaggerPreview implements OnChanges, AfterViewInit {
         parsed = {};
       }
     }
+    // Guard: do not render if parsed spec is empty or not an object
+    if (!parsed || (typeof parsed === 'object' && Object.keys(parsed).length === 0)) {
+      this.swaggerContainer.nativeElement.innerHTML = '';
+      return;
+    }
     this.swaggerContainer.nativeElement.innerHTML = '';
     if (this.swaggerContainer) {
-      // SwaggerUI({
-      //   domNode: this.swaggerContainer.nativeElement,
-      //   spec: parsed,
-      //   presets: [SwaggerUI.presets.apis],
-      //   layout: 'BaseLayout',
-      //   docExpansion: 'none',
-      //   deepLinking: true
-      // });
       SwaggerUIBundle({
         domNode: this.swaggerContainer.nativeElement,
         spec: parsed, // Use the parsed spec object
-        // Access presets directly from SwaggerUIBundle
         presets: [
-          // SwaggerUIBundle.presets.apis, // The default APIs preset
           SwaggerUIStandalonePreset // The standalone preset for layout
         ],
         layout: 'BaseLayout', // Use 'BaseLayout' as specified in your original code

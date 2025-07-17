@@ -10,8 +10,7 @@ import { HttpApi } from '../../services/http-api';
   imports: [
     Upload,
     ValidationResults,
-    DiffPanel,
-    SwaggerPreview
+    DiffPanel
   ],
   templateUrl: './landing-ui.html',
   styleUrl: './landing-ui.scss'

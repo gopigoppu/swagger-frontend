@@ -76,6 +76,46 @@ export class HttpApi {
   }
 
   generate(description: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/generate`, { description });
+    return new Observable(observer => {
+      fetch(`${this.baseUrl}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description })
+      }).then(response => {
+        if (!response.body) {
+          observer.error('No response body for SSE');
+          return;
+        }
+        const reader = response.body.getReader();
+        let buffer = '';
+        function read() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              observer.complete();
+              return;
+            }
+            buffer += new TextDecoder().decode(value);
+            let parts = buffer.split('\n\n');
+            buffer = parts.pop() || '';
+            for (const part of parts) {
+              if (part.trim()) {
+                // Parse SSE event
+                const lines = part.split('\n');
+                let eventType = 'message';
+                let data = '';
+                for (const line of lines) {
+                  if (line.startsWith('event:')) eventType = line.replace('event:', '').trim();
+                  if (line.startsWith('data:')) data += line.replace('data:', '').trim();
+                }
+                observer.next({ event: eventType, data });
+              }
+            }
+            read();
+          });
+        }
+        read();
+      }).catch(err => observer.error(err));
+      return () => { };
+    });
   }
 }
