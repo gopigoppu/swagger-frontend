@@ -1,0 +1,93 @@
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span>Correction Panel</span>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="viewMode === 'diff'" (click)="viewMode = 'diff'">Diff</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="viewMode === 'yaml'" (click)="viewMode = 'yaml'">YAML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="viewMode === 'json'" (click)="viewMode = 'json'">JSON</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-body">
+
+        @if (viewMode === 'diff') {
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Original</h6>
+                <pre class="bg-light p-2 border small">{{ original }}</pre>
+            </div>
+            <div class="col-md-6 position-relative">
+                <h6>Corrected</h6>
+                <div class="position-absolute end-0 top-0 m-2 d-flex gap-2" style="z-index:2;">
+                    <button class="btn btn-outline-secondary btn-sm" (click)="copy('yaml')">Copy YAML</button>
+                    <button class="btn btn-outline-primary btn-sm" (click)="download('yaml')">Download YAML</button>
+                </div>
+                @if (copiedYaml) {
+                <span class="badge bg-success position-absolute end-0 top-0 m-2" style="z-index:2;">Copied!</span>
+                }
+                @if (downloadedYaml) {
+                <span class="badge bg-info position-absolute end-0 top-0 m-2" style="z-index:2;">Downloaded!</span>
+                }
+                <pre class="bg-light p-2 border small">{{ correctedYaml }}</pre>
+            </div>
+        </div>
+
+        @if (explanations.length) {
+        <div class="mt-3">
+            <h6>Explanations</h6>
+            <ul>
+                @for (exp of explanations; track exp) {
+                <li>{{ exp }}</li>
+                }
+            </ul>
+        </div>
+        }
+
+        @if (diffHtml) {
+        <div class="mt-3">
+            <h6>Visual Diff</h6>
+            <div [innerHTML]="diffHtml"></div>
+        </div>
+        }
+        }
+
+        @if (viewMode === 'yaml') {
+        <div class="position-relative">
+            <div class="position-absolute end-0 top-0 m-2 d-flex gap-2" style="z-index:2;">
+                <button class="btn btn-outline-secondary btn-sm" (click)="copy('yaml')">Copy YAML</button>
+                <button class="btn btn-outline-primary btn-sm" (click)="download('yaml')">Download YAML</button>
+            </div>
+            @if (copiedYaml) {
+            <span class="badge bg-success position-absolute end-0 top-0 m-2" style="z-index:2;">Copied!</span>
+            }
+            @if (downloadedYaml) {
+            <span class="badge bg-info position-absolute end-0 top-0 m-2" style="z-index:2;">Downloaded!</span>
+            }
+            <pre class="bg-light p-2 border small">{{ correctedYaml }}</pre>
+        </div>
+        }
+
+        @if (viewMode === 'json') {
+        <div class="position-relative">
+            <div class="position-absolute end-0 top-0 m-2 d-flex gap-2" style="z-index:2;">
+                <button class="btn btn-outline-secondary btn-sm" (click)="copy('json')">Copy JSON</button>
+                <button class="btn btn-outline-primary btn-sm" (click)="download('json')">Download JSON</button>
+            </div>
+            @if (copiedJson) {
+            <span class="badge bg-success position-absolute end-0 top-0 m-2" style="z-index:2;">Copied!</span>
+            }
+            @if (downloadedJson) {
+            <span class="badge bg-info position-absolute end-0 top-0 m-2" style="z-index:2;">Downloaded!</span>
+            }
+            <pre class="bg-light p-2 border small">{{ correctedJson }}</pre>
+        </div>
+        }
+
+    </div>
+</div>

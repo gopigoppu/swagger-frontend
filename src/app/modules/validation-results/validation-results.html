@@ -1,0 +1,14 @@
+@if (valid === true) {
+<div class="alert alert-success">
+    <strong>Valid OpenAPI/Swagger spec!</strong>
+</div>
+} @else if (valid === false && errors.length) {
+<div class="alert alert-danger">
+    <strong>Validation Errors:</strong>
+    <ul>
+        @for (err of errors; track err) {
+        <li>{{ err }}</li>
+        }
+    </ul>
+</div>
+}

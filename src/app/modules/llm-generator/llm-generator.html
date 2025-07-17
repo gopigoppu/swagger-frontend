@@ -1,0 +1,62 @@
+<div class="card mb-4">
+    <div class="card-header">Generate OpenAPI Spec with LLM</div>
+    <div class="card-body">
+        <form (ngSubmit)="onGenerate()">
+            <div class="mb-3">
+                <label for="descInput" class="form-label">API Description</label>
+                <textarea id="descInput" class="form-control" [(ngModel)]="description" name="description" rows="3"
+                    placeholder="Describe your API (e.g. Pet store with CRUD endpoints)"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success" [disabled]="loading || !description">Generate</button>
+        </form>
+        @if(loading){
+        <div class="my-3 text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Generating...</span>
+            </div>
+            <span class="ms-2">Generating OpenAPI spec...</span>
+        </div>
+        }
+        @if(error){
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        }
+        <div class="mt-3">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="viewMode === 'yaml'" (click)="viewMode = 'yaml'">YAML</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="viewMode === 'json'" (click)="viewMode = 'json'">JSON</a>
+                </li>
+            </ul>
+            <div class="mt-2 position-relative">
+                <div class="position-absolute end-0 top-0 m-2 d-flex gap-2" style="z-index:2;">
+                    @if(viewMode === 'yaml'){
+                    <button class="btn btn-outline-secondary btn-sm" (click)="copy('yaml')">Copy YAML</button>
+                    }
+                    @if(viewMode == 'yaml'){
+                    <button class="btn btn-outline-primary btn-sm" (click)="download('yaml')">Download YAML</button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="copy('json')">Copy JSON</button>
+                    }
+                    @if(viewMode == 'json'){
+                    <button class="btn btn-outline-primary btn-sm" (click)="download('json')">Download JSON</button>
+                    }
+                </div>
+                @if(copied){
+                <span class="badge bg-success position-absolute end-0 top-0 m-2" style="z-index:2;">Copied!</span>
+                }
+                @if(downloaded){
+
+                <span class="badge bg-info position-absolute end-0 top-0 m-2" style="z-index:2;">Downloaded!</span>
+                }
+                @if(viewMode == 'yaml'){
+
+                <pre class="bg-light p-2 border small">{{ yaml }}</pre>
+                }
+                @if(viewMode == 'json'){
+                <pre class="bg-light p-2 border small">{{ json }}</pre>
+                }
+            </div>
+        </div>
+    </div>
+</div>

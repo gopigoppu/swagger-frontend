@@ -1,0 +1,56 @@
+<div class="alert alert-info d-flex align-items-center justify-content-between" role="alert">
+    <div>
+        <strong>How to use:</strong>
+        <ul class="mb-0">
+            <li>Describe your API to generate a spec, or upload an existing OpenAPI/Swagger file or URL.</li>
+            <li>Validate, auto-correct, and visually compare your API specs.</li>
+            <li>Preview your API docs in Swagger UI, copy or download YAML/JSON.</li>
+        </ul>
+        <a href="https://swagger.io/specification/" target="_blank" rel="noopener" class="link-primary">What is
+            OpenAPI?</a>
+    </div>
+    <button class="btn btn-outline-danger btn-sm ms-3" (click)="reset()">Reset</button>
+</div>
+
+
+<app-upload (contentLoaded)="onContentLoaded($event)"></app-upload>
+
+@if (uploadedContent) {
+<h5>Uploaded Content</h5>
+<pre class="bg-light p-3 border">{{ uploadedContent }}</pre>
+
+@if (loadingValidation) {
+<div class="my-3 text-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Validating...</span>
+    </div>
+    <span class="ms-2">Validating...</span>
+</div>
+}
+
+<app-validation-results [valid]="validation.valid" [errors]="validation.errors"></app-validation-results>
+
+@if (validation.valid === false && !correctionLoading) {
+<button class="btn btn-warning mt-2" (click)="triggerCorrection()">LLM Auto-Correct</button>
+}
+
+@if (correctionLoading) {
+<div class="my-3 text-center">
+    <div class="spinner-border text-warning" role="status">
+        <span class="visually-hidden">Correcting...</span>
+    </div>
+    <span class="ms-2">LLM Correction in progress...</span>
+</div>
+}
+
+@if (correctionError) {
+<div class="alert alert-danger mt-3">{{ correctionError }}</div>
+}
+
+@if (correction && !correctionLoading) {
+<app-diff-panel [original]="correction.original" [correctedYaml]="correction.correctedYaml"
+    [correctedJson]="correction.correctedJson" [explanations]="correction.explanations"></app-diff-panel>
+}
+
+<app-swagger-preview [spec]="correction?.correctedYaml || uploadedContent"></app-swagger-preview>
+}
